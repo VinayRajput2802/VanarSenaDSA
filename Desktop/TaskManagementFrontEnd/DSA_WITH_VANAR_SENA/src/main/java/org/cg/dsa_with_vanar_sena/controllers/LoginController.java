@@ -26,7 +26,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<String> check(@RequestParam String email,@RequestParam String password){
-        System.out.println(email+" "+password);
         return new ResponseEntity<String>(loginService.isLogin(email,password), HttpStatus.OK);
     }
 

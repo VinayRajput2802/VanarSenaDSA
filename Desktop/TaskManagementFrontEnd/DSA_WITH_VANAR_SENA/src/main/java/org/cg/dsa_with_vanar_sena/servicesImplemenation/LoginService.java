@@ -1,6 +1,7 @@
 package org.cg.dsa_with_vanar_sena.servicesImplemenation;
 
 import org.cg.dsa_with_vanar_sena.entity.User;
+import org.cg.dsa_with_vanar_sena.exception.NotFoundException;
 import org.cg.dsa_with_vanar_sena.repository.IUserRepository;
 import org.cg.dsa_with_vanar_sena.services.ILoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,17 +18,15 @@ public class LoginService implements ILoginService {
         Optional<User> optionalUser = userRepository.findByEmail(mail);
         if (optionalUser.isPresent()){
             User user = optionalUser.get();
-            System.out.println(user.getName());
-            System.out.println(user.getPassword()+" "+password);
             if (user.getPassword().equals(password)){
                 return "success";
             }
             else{
-                return "password not match";
+                throw new NotFoundException("Incorrect Password");
             }
         }
         else{
-            return "user not found";
+            throw new NotFoundException("User Not Found");
         }
     }
 }
