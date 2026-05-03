@@ -25,30 +25,29 @@ function Signup() {
   const togglePass = () => {
     setShowPass(!showPass);
   };
-
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
           const res = await axios.post(
-            "http://localhost:8085/api/add",null,{
-            params:{
+            "http://localhost:8085/api/add",{
                 name:name,
                 username:username,
                 email:email,
                 password:password,
                 confirmPassword:confirmPassword
-                }
             }
+
           );
         if (res.data=="success"){
-          setMsg(res.data);
-          navigate(`/otp?username=${email}`);
+          setMsg("Data Save Successfully");
+//           navigate(`/otp?username=${email}`);
+        }
+    else{
+        setMsg(String(res.data));
         }
 
         } catch (err) {
-          console.log(err);
-          setMsg("error ");
-
+          setMsg("error");
         }
     }
 
@@ -75,7 +74,9 @@ function Signup() {
       {/* Main */}
       <main className="main">
         <div className="card">
-            {msg && <h3>{msg}</h3>}
+             <p style={{ color: msg.includes("success") ? "green" : "red" }}>{msg}</p>
+{/*             {msg && <h3>{msg}</h3>} */}
+
 
           {/* Top */}
           <div className="card-top">

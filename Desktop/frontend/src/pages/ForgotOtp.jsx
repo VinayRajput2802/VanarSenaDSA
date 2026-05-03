@@ -80,12 +80,12 @@ function ForgotOtp() {
   const handleVerify = async (e) =>  {
     const finalOtp = otp.join("");
     try{
-        const res = await axios.post("http://localhost:8085/api/forgot/change",null,{
-            params:{
+        const res = await axios.post("http://localhost:8085/api/forgot/change",{
+
                 email:username,
                 otp:finalOtp,
                 password:password
-                }
+
             }
             );
         if (res.data==true){

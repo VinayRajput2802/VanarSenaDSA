@@ -17,18 +17,16 @@ function ForgotPassword() {
           e.preventDefault();
         try {
           const res = await axios.post(
-            "http://localhost:8085/api/forgot",null,
-            {params:{
+            "http://localhost:8085/api/forgot",{
                 email:username,
                 password:password,
                 confirmPassword:confirmPassword
             }
-        }
+
           );
 
-          setMsg(res.data+" "+password);
+          setMsg(res.data);
           if (res.data=="otp sent"){
-//               navigate(`/forgotOtp?username=${email}&password=${password}`);
                 navigate("/forgotOtp",{
                     state:{username:username,password:password}
                     });
@@ -37,8 +35,8 @@ function ForgotPassword() {
               navigate("/forgot");
               }
         } catch (err) {
-//           setMsg("Server Error ❌");
-               navigate("/forgot");
+          setMsg("Server Error ❌");
+          navigate("/forgot");
         }
       }
 
@@ -78,6 +76,7 @@ function ForgotPassword() {
       <main className="main">
 
         <div className="card">
+            <p style={{ color: msg.includes("success") ? "green" : "red" }}>{msg}</p>
 
 
           {/* Top */}
@@ -161,7 +160,6 @@ function ForgotPassword() {
             >
               {!loading ? btnText : "Loading..."}
             </button>
-            <p>{msg}</p>
 
           </form>
 
