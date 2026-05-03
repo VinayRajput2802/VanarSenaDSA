@@ -76,11 +76,9 @@ function Otp() {
   const handleVerify = async (e) =>  {
     const finalOtp = otp.join("");
     try{
-        const res = await axios.post("http://localhost:8085/api/add/otp",null,{
-            params:{
+        const res = await axios.post("http://localhost:8085/api/add/otp",{
                 email:username,
                 otp:finalOtp
-                }
             }
             );
         if (res.data==true){

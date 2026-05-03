@@ -16,12 +16,11 @@ function Login() {
           e.preventDefault();
         try {
           const res = await axios.post(
-            "http://localhost:8085/api/login",null,
-            {params:{
+            "http://localhost:8085/api/login",{
                 email:username,
                 password:password
             }
-        }
+
           );
 
 
@@ -29,10 +28,10 @@ function Login() {
               navigate("/dashboard");
               }
           else if (res.data=="password not match"){
-              navigate("/login");
+              setMsg("Password Mismatch")
               }
           else{
-              navigate("/signup");
+              setMsg("User Not Found")
               }
         } catch (err) {
           setMsg("Server Error ❌");
@@ -76,16 +75,20 @@ function Login() {
       {/* Main */}
       <main className="main">
 
+
         <div className="card">
 
 
           {/* Top */}
+          <p style={{ color: msg.includes("success") ? "green" : "red" }}>{msg}</p>
+
           <div className="card-top">
             <div className="card-avatar">
               <span>&#9670;</span>
             </div>
             <h1>Welcome Back</h1>
             <p>Login to continue your DSA journey</p>
+
           </div>
 
           {/* Social */}
@@ -173,7 +176,6 @@ function Login() {
             >
               {!loading ? btnText : "Loading..."}
             </button>
-            <p>{msg}</p>
 
           </form>
 
