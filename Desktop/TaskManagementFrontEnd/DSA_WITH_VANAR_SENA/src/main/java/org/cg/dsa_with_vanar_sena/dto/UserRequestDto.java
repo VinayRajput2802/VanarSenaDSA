@@ -7,14 +7,15 @@ public class UserRequestDto {
     private String password;
     private String name;
     private Status status;
+    private String email;
 
     public UserRequestDto(){}
 
-    public UserRequestDto(String username, String password, String name, Status status) {
+    public UserRequestDto(String username, String password, String name, String email) {
         this.username = username;
         this.password = password;
         this.name = name;
-        this.status = status;
+        this.email = email;
     }
 
     public String getUsername() {
@@ -47,5 +48,13 @@ public class UserRequestDto {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
