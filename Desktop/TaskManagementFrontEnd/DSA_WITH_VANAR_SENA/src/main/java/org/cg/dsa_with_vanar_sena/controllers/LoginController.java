@@ -1,6 +1,11 @@
 package org.cg.dsa_with_vanar_sena.controllers;
 
 
+import org.cg.dsa_with_vanar_sena.dto.ForgotOtpRequestDto;
+import org.cg.dsa_with_vanar_sena.dto.ForgotPasswordRequestDto;
+import org.cg.dsa_with_vanar_sena.dto.LoginRequestDto;
+import org.cg.dsa_with_vanar_sena.exception.InvalidOtpException;
+import org.cg.dsa_with_vanar_sena.exception.NotFoundException;
 import org.cg.dsa_with_vanar_sena.otp.OtpGenerator;
 import org.cg.dsa_with_vanar_sena.services.IEmailService;
 import org.cg.dsa_with_vanar_sena.services.ILoginService;
@@ -25,36 +30,35 @@ public class LoginController {
     IEmailService emailService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> check(@RequestParam String email,@RequestParam String password){
-        return new ResponseEntity<String>(loginService.isLogin(email,password), HttpStatus.OK);
+    public ResponseEntity<String> check(@RequestBody LoginRequestDto loginRequestDto){
+        String output = loginService.isLogin(loginRequestDto.getEmail(),loginRequestDto.getPassword());
+        return new ResponseEntity<String>(output, HttpStatus.OK);
     }
 
     @PostMapping("/forgot")
-    public ResponseEntity<String> change(@RequestParam String email,@RequestParam String password,@RequestParam String confirmPassword){
-        if (!userService.checkEmail(email)){
-            return new ResponseEntity<>("User Not Found",HttpStatus.OK);
+    public ResponseEntity<String> change(@RequestBody ForgotPasswordRequestDto forgotPasswordRequestDto){
+        if (!userService.checkEmail(forgotPasswordRequestDto.getEmail())){
+            throw new NotFoundException("User Not Found");
         }
-        if (!password.equals(confirmPassword)){
-            return new ResponseEntity<>("Password and Confirm Password Should be same",HttpStatus.OK);
+        if (!forgotPasswordRequestDto.getPassword().equals(forgotPasswordRequestDto.getConfirmPassword())){
+            throw new RuntimeException("Password and Confirm Password Should be same");
         }
         String otp = OtpGenerator.generate();
-        otpService.saveOtp(email,otp);
-        emailService.sendOtp(email,otp);
-        System.out.println(email+" "+otp);
+        otpService.saveOtp(forgotPasswordRequestDto.getEmail(),otp);
+        emailService.sendOtp(forgotPasswordRequestDto.getEmail(),otp);
         return new ResponseEntity<>("otp sent",HttpStatus.OK);
     }
 
     @PostMapping("/forgot/change")
-    public ResponseEntity<String> isChange(@RequestParam String email,@RequestParam String password,@RequestParam String otp){
-        if (!otpService.checkUser(email)){
-            return new ResponseEntity<String>("Server Error",HttpStatus.OK);
+    public ResponseEntity<String> isChange(@RequestBody ForgotOtpRequestDto forgotOtpRequestDto){
+        if (!otpService.checkUser(forgotOtpRequestDto.getEmail())){
+            throw new RuntimeException("Server Issue");
         }
-        if (!otpService.getOtp(email).equals(otp)){
-            return new ResponseEntity<String>("Invalid Otp",HttpStatus.OK);
+        if (!otpService.getOtp(forgotOtpRequestDto.getEmail()).equals(forgotOtpRequestDto.getOtp())){
+            throw new InvalidOtpException("Invalid Otp");
         }
-        System.out.println(email+" "+otp+" "+password);
-        userService.changePassword(email,password);
-        otpService.deleteOtp(email);
+        userService.changePassword(forgotOtpRequestDto.getEmail(),forgotOtpRequestDto.getPassword());
+        otpService.deleteOtp(forgotOtpRequestDto.getEmail());
         return new ResponseEntity<String>("Done",HttpStatus.OK);
     }
 
