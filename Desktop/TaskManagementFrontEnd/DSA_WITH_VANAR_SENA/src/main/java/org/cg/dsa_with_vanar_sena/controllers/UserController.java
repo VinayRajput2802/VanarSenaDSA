@@ -6,6 +6,7 @@ import org.cg.dsa_with_vanar_sena.entity.User;
 import org.cg.dsa_with_vanar_sena.enums.Status;
 import org.cg.dsa_with_vanar_sena.exception.FoundException;
 import org.cg.dsa_with_vanar_sena.exception.InvalidOtpException;
+import org.cg.dsa_with_vanar_sena.exception.NotFoundException;
 import org.cg.dsa_with_vanar_sena.otp.OtpGenerator;
 import org.cg.dsa_with_vanar_sena.services.IEmailService;
 import org.cg.dsa_with_vanar_sena.services.IOtpService;
@@ -31,7 +32,7 @@ public class UserController {
     @PostMapping("/resend")
     public Boolean resendOtp(@RequestParam String email){
         if (!otpService.checkUser(email)){
-            return false;
+            throw new NotFoundException("Something Wrong Try Again");
         }
         else{
             String otp = OtpGenerator.generate();
@@ -44,16 +45,13 @@ public class UserController {
     @PostMapping("/add")
     public ResponseEntity<String> newUser(@RequestBody SignUpDto signUpDto){
         if (!signUpDto.getPassword().equals(signUpDto.getConfirmPassword())){
-            return new ResponseEntity<String>("Password and Confirm Password does not match",HttpStatus.OK);
-
+            throw new RuntimeException("Password and Confirm Password does not match");
         }
         if (userService.checkUsername(signUpDto.getUsername())){
-            return new ResponseEntity<String>("Username Already Exists",HttpStatus.OK);
-
+            throw new FoundException("Username Already Exists");
         }
         if (userService.checkEmail(signUpDto.getEmail())){
-            return new ResponseEntity<String>("Email already register",HttpStatus.OK);
-
+            throw new FoundException("Email Already Registered");
         }
         String otp = OtpGenerator.generate();
         otpService.saveOtp(signUpDto.getEmail(), otp);

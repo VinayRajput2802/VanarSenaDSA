@@ -40,14 +40,19 @@ function Signup() {
           );
         if (res.data=="success"){
           setMsg("Data Save Successfully");
-//           navigate(`/otp?username=${email}`);
-        }
-    else{
-        setMsg(String(res.data));
+          navigate("/login");
         }
 
         } catch (err) {
-          setMsg("error");
+            if (err.response){
+                setMsg(err.response.data.message);
+                }
+            else if (err.request){
+                setMsg("Server Not Respond");
+                }
+            else{
+                setMsg("Something Went Wrong");
+                }
         }
     }
 

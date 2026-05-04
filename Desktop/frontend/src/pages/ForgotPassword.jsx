@@ -26,17 +26,22 @@ function ForgotPassword() {
           );
 
           setMsg(res.data);
-          if (res.data=="otp sent"){
-                navigate("/forgotOtp",{
-                    state:{username:username,password:password}
-                    });
+
+            navigate("/forgotOtp",{
+                state:{username:username,password:password}
+                });
+
+
+        } catch (err) {
+          if (err.response){
+              setMsg(err.response.data.message);
+              }
+          else if (err.request){
+              setMsg("Server Not Respond");
               }
           else{
-              navigate("/forgot");
+              setMsg("Something Went Wrong");
               }
-        } catch (err) {
-          setMsg("Server Error ❌");
-          navigate("/forgot");
         }
       }
 

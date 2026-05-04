@@ -97,7 +97,7 @@ public class UserService implements IUserService {
             return true;
         }
         else{
-            return false;
+            throw new RuntimeException("Something Wrong");
         }
     }
 }

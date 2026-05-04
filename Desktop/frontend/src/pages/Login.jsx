@@ -25,16 +25,21 @@ function Login() {
 
 
           if (res.data=="success"){
+              setMsg("success");
               navigate("/dashboard");
               }
-          else if (res.data=="password not match"){
-              setMsg("Password Mismatch")
-              }
-          else{
-              setMsg("User Not Found")
-              }
+
+
         } catch (err) {
-          setMsg("Server Error ❌");
+            if (err.response){
+                setMsg(err.response.data.message);
+                }
+            else if(err.request){
+                setMsg("Server Not Respond");
+                }
+            else{
+            setMsg("Something went wrong");
+          }
         }
       };
 
