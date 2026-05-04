@@ -81,15 +81,21 @@ function Otp() {
                 otp:finalOtp
             }
             );
-        if (res.data==true){
-            navigate(`/`);
-            }
-        else{
-            navigate(`/login`);
-            }
+
+        setMsg("Otp Verified");
+        navigate(`/`);
+
         }
     catch(err){
-        console.log("Error");
+        if (err.response){
+            setMsg(err.response.data.message);
+            }
+        else if (err.request){
+            setMsg("Server Not Respond");
+            }
+        else{
+            setMsg("Something Went Wrong");
+            }
         }
   };
 
@@ -104,20 +110,21 @@ function Otp() {
                 }
             });
 
-        if (res.data==true){
-            setMsg("Otp Send Successfull");
-            }
-        else{
-            setMsg("Sorry Issue with server");
-            }
-
-
+        setMsg("Otp Send Successfull");
         setTime(30);
         setCanResend(false);
     }
-    catch(error){
-            console.log("Server Error");
+    catch(err){
+        if (err.response){
+            setMsg(err.response.data.message);
             }
+        else if (err.request){
+            setMsg("Server Not Respond");
+            }
+        else{
+            setMsg("Something Went Wrong");
+            }
+    }
   };
 
   return (
